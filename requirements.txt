@@ -12,6 +12,8 @@ huggingface_hub>=0.21
 accelerate
 sentencepiece
 safetensors
+requests
+
 
 # Numerics / Audio
 numpy<2.0

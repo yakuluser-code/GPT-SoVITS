@@ -1,9 +1,8 @@
-# .github/workflows/deploy-to-hf-space.yml
 name: Deploy to Hugging Face Space
 
 on:
   push:
-    branches: [ space-lite ]   # <-- deploy whenever you push to space-lite
+    branches: [ space-lite ]   # deploy whenever you push to space-lite
 
 jobs:
   deploy:
@@ -18,6 +17,8 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}        # set in GitHub repo secrets
           HF_SPACE_ID: ${{ secrets.HF_SPACE_ID }}  # e.g. yourname/gpt-sovits
         run: |
-          git remote add space https://user:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE_ID}
-          # Push the current commit (space-lite) to the Space's default branch (main)
+          # Add or update the Space remote that uses your HF token
+          git remote add space https://user:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE_ID} || \
+          git remote set-url space https://user:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE_ID}
+          # Push the current commit on space-lite to the Space's default branch (main)
           git push --force space HEAD:main

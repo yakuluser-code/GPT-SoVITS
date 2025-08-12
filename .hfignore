@@ -1,0 +1,15 @@
+__pycache__/
+*.pt
+*.pth
+*.bin
+*.ckpt
+*.npz
+*.npy
+*.onnx
+*.wav
+*.mp3
+*.flac
+models/
+data/
+outputs/
+.cache/

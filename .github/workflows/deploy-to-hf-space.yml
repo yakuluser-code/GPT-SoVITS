@@ -54,6 +54,12 @@ jobs:
             --exclude='GPT_SoVITS/text/ja_userdic/*.csv' \
             ./ export/
 
+          # overwrite packages.txt with a comment-free version
+          # (strip inline comments and blank lines)
+          sed -E 's/#.*$//' packages.txt | sed '/^[[:space:]]*$/d' > export/packages.txt
+          echo "Sanitized export/packages.txt:"
+          cat export/packages.txt
+
       - name: Push export to Space (yakuldog/GPT-SoVITS)
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}

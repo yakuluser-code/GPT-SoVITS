@@ -1,6 +1,17 @@
-# Core Torch (CPU wheels auto-resolve on Spaces)
+# ---- Core runtime ----
+gradio==5.41.0
+
+# PyTorch (CPU wheels resolve automatically on Spaces)
 torch==2.2.2
 torchaudio==2.2.2
+
+# HF + NLP
+transformers>=4.43,<5
+tokenizers>=0.13,<1.0
+huggingface_hub>=0.21
+accelerate
+sentencepiece
+safetensors
 
 # Numerics / Audio
 numpy<2.0
@@ -10,17 +21,15 @@ librosa==0.10.2
 numba
 ffmpeg-python
 
-# Web UI
-gradio>=4.0,<5
-huggingface_hub>=0.21
-safetensors
-tqdm
+# Utilities
 psutil
+tqdm
 pydantic<=2.10.6
 PyYAML
 matplotlib
+chardet
 
-# GPT-SoVITS deps commonly used
+# GPT-SoVITS common deps
 x_transformers
 einops
 rotary_embedding_torch
@@ -29,13 +38,7 @@ wordsegment
 torchmetrics<=1.5
 pytorch-lightning==2.2.5
 peft
-transformers>=4.43,<=4.50
-sentencepiece
-tokenizers>=0.13,<1
 
-# Text preprocessors (only ones often needed)
+# Text preprocessors sometimes used by the repo
 jieba
 jieba-fast
-
-# Optional — avoids runtime import errors in multilingual repos
-chardet

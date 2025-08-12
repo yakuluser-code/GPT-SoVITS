@@ -14,7 +14,6 @@ sentencepiece
 safetensors
 requests
 
-
 # Numerics / Audio
 numpy<2.0
 scipy
@@ -44,3 +43,4 @@ peft
 # Text preprocessors sometimes used by the repo
 jieba
 jieba-fast
+pypinyin

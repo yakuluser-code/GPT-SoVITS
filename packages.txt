@@ -1,1 +1,5 @@
+# System packages installed by Spaces
 ffmpeg
+sox
+libsndfile1
+

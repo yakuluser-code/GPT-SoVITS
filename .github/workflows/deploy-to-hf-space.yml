@@ -17,8 +17,7 @@ jobs:
       - name: Debug ref
         run: echo "Ref=$GITHUB_REF  Branch=$GITHUB_REF_NAME  SHA=$GITHUB_SHA"
 
-      # Build a filtered export that excludes large/unused assets
-      - name: Build export tree (exclude >10MB offenders)
+            - name: Build export tree (exclude >10MB offenders)
         run: |
           set -e
           rm -rf export
@@ -47,8 +46,11 @@ jobs:
             --exclude '*.tar' \
             --exclude '*.tar.gz' \
             --exclude '*.7z' \
+            --exclude '*.pickle' \
+            --exclude '*.pkl' \
             --exclude 'GPT_SoVITS/text/ja_userdic/*.csv' \
             ./ export/
+
 
           echo "Export contents:"
           du -sh export || true

@@ -1973,11 +1973,17 @@ with gr.Blocks(title="GPT-SoVITS WebUI", analytics_enabled=False, js=js, css=css
         with gr.TabItem(i18n("2-GPT-SoVITS-变声")):
             gr.Markdown(value=i18n("施工中，请静候佳音"))
 
+# === end of: with gr.Blocks(...) as app ===
+
+# expose for Hugging Face / wrapper import
+demo = app
+
+if __name__ == "__main__":
     app.queue().launch(
         server_name="0.0.0.0",
         inbrowser=True,
         share=is_share,
         server_port=webui_port_main,
+        # quiet=True,
     )
-
 

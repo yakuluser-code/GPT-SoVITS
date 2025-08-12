@@ -1,4 +1,13 @@
-<div align="center">
+---
+title: GPT-SoVITS — Space Wrapper
+emoji: 🗣️
+sdk: gradio
+app_file: space_app.py
+pinned: true
+---
+
+<div align="center"> 
+
 
 <h1>GPT-SoVITS-WebUI</h1>
 A Powerful Few-shot Voice Conversion and Text-to-Speech WebUI.<br><br>

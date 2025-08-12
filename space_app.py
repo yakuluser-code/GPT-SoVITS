@@ -9,6 +9,8 @@ Path("/tmp/mpl_cache").mkdir(parents=True, exist_ok=True)
 os.environ.setdefault("HF_HOME", "/data")
 os.environ.setdefault("HF_HUB_CACHE", "/data/hf_cache")
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+os.environ.setdefault("ENGLISH_ONLY", "1")
+
 
 # Pass through HF token if provided in Space settings
 HF_TOKEN = (os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACEHUB_API_TOKEN") or "").strip()

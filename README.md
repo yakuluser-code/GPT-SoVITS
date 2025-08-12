@@ -1,9 +1,27 @@
 ---
-title: GPT-SoVITS — Space Wrapper
+---
+title: GPT-SoVITS — Space (yakuldog)
 emoji: 🗣️
 sdk: gradio
 app_file: space_app.py
 pinned: true
+---
+
+This Space runs a fork of **RVC-Boss/GPT-SoVITS** with a small wrapper to make it
+Hugging Face–friendly.
+
+## How this is wired
+- `space_app.py` imports `webui.py` and grabs the Gradio app (`demo = app`).
+- `requirements.txt` pins Python deps (incl. `gradio==5.41.0`).
+- `packages.txt` installs system deps: `ffmpeg`, `sox`, `libsndfile1`.
+- Models/cache persist under `/data` so rebuilds are faster.
+
+## Deploy from GitHub
+This Space is auto-updated from the GitHub branch via a GitHub Action:
+`.github/workflows/deploy-to-hf-space.yml`.
+
+**Space ID:** `yakuldog/GPT-SoVITS`
+
 ---
 
 <div align="center"> 

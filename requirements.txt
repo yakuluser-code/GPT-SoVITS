@@ -30,7 +30,7 @@ PyYAML
 matplotlib
 chardet
 
-# GPT-SoVITS common deps
+# GPT-SoVITS common deps (English)
 x_transformers
 einops
 rotary_embedding_torch
@@ -39,8 +39,3 @@ wordsegment
 torchmetrics<=1.5
 pytorch-lightning==2.2.5
 peft
-
-# Text preprocessors sometimes used by the repo
-jieba
-jieba-fast
-pypinyin

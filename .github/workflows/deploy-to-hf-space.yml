@@ -3,6 +3,7 @@ name: Deploy to Hugging Face Space
 on:
   push:
     branches: [ space-lite ]
+  workflow_dispatch: {}
 
 jobs:
   deploy:
@@ -13,12 +14,56 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Push to Space (yakuldog/GPT-SoVITS)
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}   # set this in GitHub: Settings → Secrets → Actions
+      - name: Debug ref
+        run: echo "Ref=$GITHUB_REF  Branch=$GITHUB_REF_NAME  SHA=$GITHUB_SHA"
+
+      # Build a filtered export that excludes large/unused assets
+      - name: Build export tree (exclude >10MB offenders)
         run: |
           set -e
-          git remote add space https://user:${HF_TOKEN}@huggingface.co/spaces/yakuldog/GPT-SoVITS || \
-          git remote set-url space https://user:${HF_TOKEN}@huggingface.co/spaces/yakuldog/GPT-SoVITS
-          # Push the current commit on space-lite to the Space's default branch (main)
+          rm -rf export
+          mkdir export
+          rsync -a \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'models/' \
+            --exclude 'weights/' \
+            --exclude 'SoVITS_weights/' \
+            --exclude 'GPT_weights/' \
+            --exclude 'datasets/' \
+            --exclude 'data/' \
+            --exclude 'outputs/' \
+            --exclude '*.pt' \
+            --exclude '*.pth' \
+            --exclude '*.ckpt' \
+            --exclude '*.bin' \
+            --exclude '*.npz' \
+            --exclude '*.npy' \
+            --exclude '*.onnx' \
+            --exclude '*.wav' \
+            --exclude '*.mp3' \
+            --exclude '*.flac' \
+            --exclude '*.zip' \
+            --exclude '*.tar' \
+            --exclude '*.tar.gz' \
+            --exclude '*.7z' \
+            --exclude 'GPT_SoVITS/text/ja_userdic/*.csv' \
+            ./ export/
+
+          echo "Export contents:"
+          du -sh export || true
+
+      - name: Push export to Space (yakuldog/GPT-SoVITS)
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -e
+          cd export
+          git init
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Space export $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git remote add space https://user:${HF_TOKEN}@huggingface.co/spaces/yakuldog/GPT-SoVITS
+          # Push a clean, filtered tree as the Space's main branch
           git push --force space HEAD:main

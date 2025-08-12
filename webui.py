@@ -186,7 +186,7 @@ if not ENGLISH_ONLY:
     check_pretrained_is_exist(version)
 else:
     print("[webui] ENGLISH_ONLY=1 → skipping CN pretrained checks.")
-
+    
 for key in pretrained_sovits_name.keys():
     if os.path.exists(pretrained_sovits_name[key]) == False:
         pretrained_sovits_name[key] = ""
@@ -1301,6 +1301,7 @@ if not os.path.exists("GPT_SoVITS/text/G2PWModel"):
     print("[webui] ENGLISH_ONLY=1 → created G2PWModel stub dir (no CN downloads).")
 
 
+
 def sync(text):
     return {"__type__": "update", "value": text}
 
@@ -1988,5 +1989,6 @@ if __name__ == "__main__":
         server_port=webui_port_main,
         # quiet=True,
     )
+
 
 

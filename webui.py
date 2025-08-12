@@ -2,6 +2,7 @@ import os
 import sys
 
 os.environ["version"] = version = "v2Pro"
+ENGLISH_ONLY = os.getenv("ENGLISH_ONLY", "1") == "1"
 now_dir = os.getcwd()
 sys.path.insert(0, now_dir)
 import warnings
@@ -181,7 +182,11 @@ def check_pretrained_is_exist(version):
         print("warning: ", i18n("以下模型不存在:") + _)
 
 
-check_pretrained_is_exist(version)
+if not ENGLISH_ONLY:
+    check_pretrained_is_exist(version)
+else:
+    print("[webui] ENGLISH_ONLY=1 → skipping CN pretrained checks.")
+
 for key in pretrained_sovits_name.keys():
     if os.path.exists(pretrained_sovits_name[key]) == False:
         pretrained_sovits_name[key] = ""
@@ -1291,12 +1296,9 @@ def switch_version(version_):
     )  # {'__type__': 'update', "interactive": False if version in v3v4set else True, "value": False}, \ ####batch infer
 
 
-if os.path.exists("GPT_SoVITS/text/G2PWModel"):
-    ...
-else:
-    cmd = '"%s" -s GPT_SoVITS/download.py' % python_exec
-    p = Popen(cmd, shell=True)
-    p.wait()
+if not os.path.exists("GPT_SoVITS/text/G2PWModel"):
+    os.makedirs("GPT_SoVITS/text/G2PWModel", exist_ok=True)
+    print("[webui] ENGLISH_ONLY=1 → created G2PWModel stub dir (no CN downloads).")
 
 
 def sync(text):
@@ -1986,4 +1988,5 @@ if __name__ == "__main__":
         server_port=webui_port_main,
         # quiet=True,
     )
+
 

@@ -1978,17 +1978,14 @@ with gr.Blocks(title="GPT-SoVITS WebUI", analytics_enabled=False, js=js, css=css
 
 # === end of: with gr.Blocks(...) as app ===
 
-# expose for Hugging Face / wrapper import
+
+# Expose for Hugging Face
 demo = app
 
+# Local-only launch (Spaces will NOT run this)
 if __name__ == "__main__":
-    app.queue().launch(
+    demo.queue().launch(
         server_name="0.0.0.0",
-        inbrowser=True,
-        share=is_share,
-        server_port=webui_port_main,
-        # quiet=True,
+        server_port=7860,
+        show_api=False,
     )
-
-
-

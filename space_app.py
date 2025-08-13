@@ -69,40 +69,56 @@ def import_module_from_path(py_path: Path):
     spec.loader.exec_module(mod)
     return mod
 
-# likely entry files — "webui.py" is yours
+import gradio as gr
+
+def ensure_gradio(obj):
+    """Return obj if it looks like a Gradio app, else None."""
+    if obj is None:
+        return None
+    # Blocks & Interface both have .launch
+    return obj if hasattr(obj, "launch") else None
+
 CANDIDATES = ["webui.py", "app.py", "infer-web.py", "gui.py"]
 
 ui = None
 for name in CANDIDATES:
     p = root / name
-    if p.exists():
-        try:
-            m = import_module_from_path(p)
-            # first try common exported variables
-            for attr in ("demo", "app", "iface", "interface"):
-                if hasattr(m, attr):
-                    ui = getattr(m, attr)
+    if not p.exists():
+        continue
+    try:
+        m = import_module_from_path(p)
+        # Try exported variables first
+        for attr in ("demo", "app", "iface", "interface"):
+            if hasattr(m, attr):
+                cand = getattr(m, attr)
+                ui = ensure_gradio(cand)
+                if ui:
+                    print(f"[space] loaded UI from {name} using attr `{attr}`")
                     break
-            # then try typical factories
-            if ui is None:
-                for factory in ("build_ui", "create_ui", "get_app"):
-                    if hasattr(m, factory):
-                        ui = getattr(m, factory)()
+        # If not found, try common factories
+        if ui is None:
+            for factory in ("build_ui", "create_ui", "get_app"):
+                if hasattr(m, factory):
+                    cand = getattr(m, factory)()
+                    ui = ensure_gradio(cand)
+                    if ui:
+                        print(f"[space] loaded UI from {name} via factory `{factory}()`")
                         break
-            if ui is not None:
-                break
-        except Exception as e:
-            print(f"[space] import failed for {name}: {e}")
+        if ui:
+            break
+        else:
+            print(f"[space] {name} imported but no Gradio app found in exports/factories.")
+    except Exception as e:
+        print(f"[space] import failed for {name}: {e}")
 
-# Fallback minimal UI if nothing was found (shouldn't happen once webui.py exposes `demo = app`)
+# Fallback minimal UI so the Space always initializes
 if ui is None:
-    import gradio as gr
     with gr.Blocks(title="GPT-SoVITS (Space Wrapper)") as ui:
         gr.Markdown(
-            "### ⚠️ Could not auto-find the upstream Gradio app.\n"
-            "Make sure `webui.py` exports `demo = app`, and its `.launch()` is guarded by "
-            "`if __name__ == '__main__':`."
+            "### ⚠️ Could not find a Gradio app to serve.\n"
+            "Make sure `webui.py` ends with:\n"
+            "`demo = app`  and (optionally for local) `if __name__ == '__main__': demo.queue().launch(...)`"
         )
 
-# Spaces looks for a top-level `demo` variable
+# Spaces serves a top-level `demo`
 demo = ui
